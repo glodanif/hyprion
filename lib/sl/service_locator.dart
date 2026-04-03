@@ -15,10 +15,10 @@ import 'package:hyprion/ui/profile/bloc/profile_cubit.dart';
 final getIt = GetIt.instance;
 
 void initDependencies({bool useMocks = false}) {
-  if (useMocks) {
-    _initDataMocks();
-  } else {
+  if (!useMocks) {
     _initData();
+  } else {
+    _initDataMocks();
   }
   _initBlocs();
 }
