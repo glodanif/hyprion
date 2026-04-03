@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:hyprion/data/entity/audio_sink.dart';
 import 'package:hyprion/data/entity/monitor.dart';
 import 'package:hyprion/data/entity/profile.dart';
-import 'package:hyprion/data/entity/transform.dart';
+import 'package:hyprion/data/entity/transformation.dart';
 
 import 'profile_storage.dart';
 
@@ -133,7 +133,7 @@ class ProfileStorageImpl extends ProfileStorage {
       'height': display.size.height,
       'position_x': display.position.x,
       'position_y': display.position.y,
-      'transformation': display.transform.code,
+      'transformation': display.transformation.code,
       'is_enabled': display.isEnabled,
     };
   }
@@ -149,7 +149,7 @@ class ProfileStorageImpl extends ProfileStorage {
         (map['height'] as num).toDouble(),
       ),
       position: Point<int>(map['position_x'] as int, map['position_y'] as int),
-      transform: Transform.values.firstWhere(
+      transformation: Transformation.values.firstWhere(
         (t) => t.code == map['transformation'] as int,
       ),
       isEnabled: map['is_enabled'] as bool,

@@ -20,6 +20,12 @@ class ProfileCubit extends Cubit<ProfileState> {
       (displays) => displays,
       (failure) => [],
     );
+    _availableDisplays.sort((a, b) {
+      if (a.isEnabled != b.isEnabled) {
+        return a.isEnabled ? -1 : 1;
+      }
+      return a.id.compareTo(b.id);
+    });
 
     debugPrint('Available displays: $_availableDisplays');
 

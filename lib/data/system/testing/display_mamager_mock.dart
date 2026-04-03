@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:fpdart/fpdart.dart';
 import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/failure.dart';
-import 'package:hyprion/data/entity/transform.dart';
+import 'package:hyprion/data/entity/transformation.dart';
 import 'package:hyprion/data/testing/either_behavior_item.dart';
 
 import '../display_manager.dart';
@@ -35,9 +35,9 @@ class DisplayManagerMockBehavior {
                 id: 0,
                 name: 'HDMI-A-1',
                 model: 'Mi TV',
-                description: 'XMD Mi TV 0x00000001',
+                description: 'Mock XMD Mi TV 0x00000001',
                 scale: 2.0,
-                transform: Transform.normal,
+                transformation: Transformation.normal,
                 resolution: Size(width: 4096, height: 2160),
                 refreshRate: 29.97,
                 isEnabled: false,
@@ -78,9 +78,9 @@ class DisplayManagerMockBehavior {
                 id: 1,
                 name: 'DP-1',
                 model: 'DELL U2719DC',
-                description: 'Dell Inc. DELL U2719DC 9BSRNS2',
+                description: 'Mock Dell Inc. DELL U2719DC 9BSRNS2',
                 scale: 1.0,
-                transform: Transform.normal,
+                transformation: Transformation.normal,
                 resolution: Size(width: 2560, height: 1440),
                 refreshRate: 59.95100,
                 isEnabled: true,
@@ -117,9 +117,9 @@ class DisplayManagerMockBehavior {
                 id: 2,
                 name: 'DP-2',
                 model: 'S23C650',
-                description: 'Samsung Electric Company S23C650 HTRD900046',
+                description: 'Mock Samsung Electric Company S23C650 HTRD900046',
                 scale: 1.0,
-                transform: Transform.normal,
+                transformation: Transformation.normal,
                 resolution: Size(width: 1920, height: 1080),
                 refreshRate: 60.0,
                 isEnabled: true,

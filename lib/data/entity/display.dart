@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:hyprion/data/entity/transform.dart';
+import 'package:hyprion/data/entity/transformation.dart';
 
 class Display {
   final int id;
@@ -8,7 +8,7 @@ class Display {
   final String model;
   final String description;
   final double scale;
-  final Transform transform;
+  final Transformation transformation;
   final Size resolution;
   final double refreshRate;
   final bool isEnabled;
@@ -22,7 +22,7 @@ class Display {
     required this.model,
     required this.description,
     required this.scale,
-    required this.transform,
+    required this.transformation,
     required this.resolution,
     required this.refreshRate,
     required this.isEnabled,
@@ -33,7 +33,7 @@ class Display {
 
   @override
   String toString() {
-    return 'Display(id: $id, name: $name, model: $model, description: $description, scale: $scale, transform: $transform, resolution: $resolution, refreshRate: $refreshRate, isEnabled: $isEnabled, mirrorOfId: $mirrorOfId, currentPosition: $currentPosition, availableMods: $availableModes)';
+    return 'Display(id: $id, name: $name, model: $model, description: $description, scale: $scale, transformation: $transformation, resolution: $resolution, refreshRate: $refreshRate, isEnabled: $isEnabled, mirrorOfId: $mirrorOfId, currentPosition: $currentPosition, availableMods: $availableModes)';
   }
 }
 

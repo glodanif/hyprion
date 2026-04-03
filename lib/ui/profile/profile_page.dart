@@ -50,7 +50,7 @@ class ProfilePage extends StatelessWidget {
             childAspectRatio: 3.0,
             children: [
               for (var i = 0; i < state.displays.length; i++)
-                _buildDisplay(state.displays[i]),
+                _buildDisplay(context, state.displays[i]),
             ],
           ),
         ),
@@ -58,32 +58,69 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDisplay(Display display) {
+  Widget _buildDisplay(BuildContext context, Display display) {
     return Card(
       elevation: 4.0,
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              display.id.toString(),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-            ),
-            const SizedBox(width: 12.0),
-            Column(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('${display.name} | ${display.model}'),
-                Text(display.description),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 24.0),
+                  child: Text(
+                    display.id.toString(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 32,
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      display.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Text(display.description),
+                  ],
+                ),
+                const Spacer(),
+                FilledButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                      display.isEnabled ? Colors.grey : Colors.lightBlue,
+                    ),
+                  ),
+                  child: Text(!display.isEnabled ? 'Enable' : 'Disable'),
+                ),
               ],
             ),
-            const Spacer(),
-            if (!display.isEnabled) const Text('Disabled'),
-            const SizedBox(width: 8.0),
-            Checkbox(value: display.isEnabled, onChanged: (value) {}),
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mode: ${display.resolution.width}x${display.resolution.height} ${display.refreshRate}Hz',
+                  ),
+                  Text(
+                    'Position: ${display.currentPosition.x}x${display.currentPosition.y}',
+                  ),
+                  Text('Scale: x${display.scale}'),
+                  Text('Transformation: ${display.transformation.label}'),
+                  if (display.mirrorOfId.isNotEmpty)
+                    Text('Mirror of ${display.mirrorOfId}'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

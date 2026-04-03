@@ -1,7 +1,7 @@
 name: hyprion
 description: "Display profiles manager"
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -17,6 +17,7 @@ dependencies:
   path_provider: ^2.1.5
   go_router: ^17.1.0
   fpdart: ^1.2.0
+  flutter_svg: ^2.2.4
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +26,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/icon_monitor_transformation.svg

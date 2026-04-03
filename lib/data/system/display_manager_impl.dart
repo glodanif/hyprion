@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hyprion/data/dependencies/dependencies.dart';
 import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/failure.dart';
-import 'package:hyprion/data/entity/transform.dart';
+import 'package:hyprion/data/entity/transformation.dart';
 
 import 'display_manager.dart';
 
@@ -44,9 +44,9 @@ class DisplayManagerImpl implements DisplayManager {
     final availableMods = _parseAvailableModes(json['availableModes']);
 
     final transformCode = json['transform'] as int;
-    final transform = Transform.values.firstWhere(
+    final transformation = Transformation.values.firstWhere(
       (t) => t.code == transformCode,
-      orElse: () => Transform.normal,
+      orElse: () => Transformation.normal,
     );
 
     final mirrorOf = json['mirrorOf'] as String;
@@ -57,7 +57,7 @@ class DisplayManagerImpl implements DisplayManager {
       model: json['model'] as String,
       description: json['description'] as String,
       scale: (json['scale'] as num).toDouble(),
-      transform: transform,
+      transformation: transformation,
       resolution: resolution,
       refreshRate: refreshRate,
       isEnabled: !(json['disabled'] as bool),
