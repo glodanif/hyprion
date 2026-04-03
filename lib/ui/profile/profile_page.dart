@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyprion/sl/service_locator.dart';
+import 'package:hyprion/ui/common/animated_visibility.dart';
 import 'package:hyprion/ui/profile/bloc/profile_cubit.dart';
 import 'package:hyprion/ui/profile/component/monitor_header.dart';
 import 'package:hyprion/ui/profile/component/monitors_canvas.dart';
@@ -57,7 +58,10 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
-        if (monitor.display.isEnabled) _buildDisplay(context, monitor),
+        AnimatedVisibility(
+          visible: monitor.display.isEnabled,
+          child: _buildDisplay(context, monitor),
+        ),
       ],
     );
   }
