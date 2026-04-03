@@ -4,7 +4,8 @@ import 'package:hyprion/sl/service_locator.dart';
 import 'router.dart';
 
 void main() async {
-  initDependencies(useMocks: false);
+  const useMocks = String.fromEnvironment('USE_MOCKS') == 'true';
+  initDependencies(useMocks: useMocks);
   runApp(const HyprionApp());
 }
 

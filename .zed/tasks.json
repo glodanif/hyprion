@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Flutter Run (with mocks)",
+    "command": "flutter",
+    "args": ["run", "--dart-define=USE_MOCKS=true"]
+  },
+  {
+    "label": "Flutter Run (without mocks)",
+    "command": "flutter",
+    "args": ["run"]
+  },
+  {
+    "label": "Flutter Build (with mocks)",
+    "command": "flutter",
+    "args": ["build", "linux", "--dart-define=USE_MOCKS=true"]
+  },
+  {
+    "label": "Flutter Build (without mocks)",
+    "command": "flutter",
+    "args": ["build", "linux"]
+  }
+]

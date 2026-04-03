@@ -4,8 +4,9 @@ import 'package:fpdart/fpdart.dart';
 import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/failure.dart';
 import 'package:hyprion/data/entity/transform.dart';
-import 'package:hyprion/data/system/display_manager.dart';
 import 'package:hyprion/data/testing/either_behavior_item.dart';
+
+import '../display_manager.dart';
 
 class DisplayManagerMock implements DisplayManager {
   final DisplayManagerMockBehavior behavior;
