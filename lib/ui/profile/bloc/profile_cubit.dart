@@ -1,15 +1,19 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyprion/data/entity/display.dart';
+import 'package:hyprion/data/entity/profile.dart';
 import 'package:hyprion/data/storage/profile_storage.dart';
 import 'package:hyprion/data/system/display_manager.dart';
 import 'package:hyprion/ui/profile/bloc/profile_state.dart';
+import 'package:hyprion/ui/profile/view_entity/monitor_view_entity.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileStorage _profileStorage;
   final DisplayManager _displayManager;
 
   List<Display> _availableDisplays = [];
+  List<MonitorViewEntity> _availableMonitors = [];
+
+  Profile? _currentProfile;
 
   ProfileCubit(this._profileStorage, this._displayManager)
     : super(ProfileLoadingState());
@@ -20,22 +24,41 @@ class ProfileCubit extends Cubit<ProfileState> {
       (displays) => displays,
       (failure) => [],
     );
-    _availableDisplays.sort((a, b) {
-      if (a.isEnabled != b.isEnabled) {
-        return a.isEnabled ? -1 : 1;
-      }
-      return a.id.compareTo(b.id);
-    });
 
-    debugPrint('Available displays: $_availableDisplays');
+    _availableMonitors = _availableDisplays
+        .map((display) => MonitorViewEntity(display: display))
+        .toList();
 
     if (profileId == null) {
-      emit(ProfileLoadedState(displays: _availableDisplays));
+      _emitMonitors();
       return;
     }
 
     emit(ProfileLoadingState());
-    final profile = await _profileStorage.getProfileById(profileId);
-    emit(ProfileLoadedState(profile: profile, displays: _availableDisplays));
+    _currentProfile = await _profileStorage.getProfileById(profileId);
+    _emitMonitors();
+  }
+
+  Future<void> setEnabled(int index, bool enabled) async {
+    final monitorIndex = _availableMonitors.indexWhere(
+      (monitor) => monitor.display.id == index,
+    );
+    if (monitorIndex != -1) {
+      final monitor = _availableMonitors[monitorIndex];
+      final updatedDisplay = monitor.display.copyWith(isEnabled: enabled);
+      _availableMonitors[monitorIndex] = monitor.copyWith(
+        display: updatedDisplay,
+      );
+      _emitMonitors();
+    }
+  }
+
+  void _emitMonitors() {
+    emit(
+      ProfileLoadedState(
+        profile: _currentProfile,
+        monitors: _availableMonitors,
+      ),
+    );
   }
 }
