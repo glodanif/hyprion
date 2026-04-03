@@ -17,10 +17,13 @@ class MonitorHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 24.0),
-          child: Text(
-            display.id.toString(),
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SizedBox(
+            width: 48,
+            child: Text(
+              display.id.toString(),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
+            ),
           ),
         ),
         Column(
@@ -36,7 +39,7 @@ class MonitorHeader extends StatelessWidget {
           onPressed: () => onEnabledChanged(!display.isEnabled),
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all<Color>(
-              display.isEnabled ? Colors.grey : Colors.lightBlue,
+              display.isEnabled ? Colors.redAccent.shade100 : Colors.lightBlue,
             ),
           ),
           child: Text(!display.isEnabled ? 'Enable' : 'Disable'),

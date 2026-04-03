@@ -39,30 +39,37 @@ class ProfilePage extends StatelessWidget {
   Widget _buildProfile(BuildContext context, ProfileLoadedState state) {
     return ListView(
       children: [
+        const SizedBox(height: 32),
         Center(child: MonitorsCanvas()),
+        const SizedBox(height: 32),
         ...state.monitors.map((monitor) => _buildMontorItem(context, monitor)),
+        const SizedBox(height: 32),
       ],
     );
   }
 
   Widget _buildMontorItem(BuildContext context, MonitorViewEntity monitor) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        MonitorHeader(
-          display: monitor.display,
-          onEnabledChanged: (enabled) {
-            context.read<ProfileCubit>().setEnabled(
-              monitor.display.id,
-              enabled,
-            );
-          },
-        ),
-        AnimatedVisibility(
-          visible: monitor.display.isEnabled,
-          child: _buildDisplay(context, monitor),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          MonitorHeader(
+            display: monitor.display,
+            onEnabledChanged: (enabled) {
+              context.read<ProfileCubit>().setEnabled(
+                monitor.display.id,
+                enabled,
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          AnimatedVisibility(
+            visible: monitor.display.isEnabled,
+            child: _buildDisplay(context, monitor),
+          ),
+        ],
+      ),
     );
   }
 
