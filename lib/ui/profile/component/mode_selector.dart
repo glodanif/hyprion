@@ -98,7 +98,7 @@ class _ModeSelectorState extends State<ModeSelector> {
         .toList();
 
     return SizedBox(
-      width: 250,
+      width: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

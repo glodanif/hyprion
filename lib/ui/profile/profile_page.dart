@@ -22,20 +22,33 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ProfileCubit>(
       create: (context) => getIt<ProfileCubit>()..loadProfile(profileId),
-      child: BlocBuilder<ProfileCubit, ProfileState>(
+      child: BlocConsumer<ProfileCubit, ProfileState>(
+        listenWhen: (previous, current) => current is ProfileSavedState,
+        listener: (context, state) {
+          if (state is ProfileSavedState) {
+            Navigator.of(context).pop();
+          }
+        },
+        buildWhen: (previous, current) => current is! ProfileSavedState,
         builder: (context, state) {
           final titleWidget = state is ProfileLoadedState
               ? ProfileNameInput(initialValue: state.profile?.name)
               : const Text('...');
-
           return Scaffold(
-            appBar: AppBar(title: titleWidget),
+            appBar: AppBar(
+              title: titleWidget,
+              actions: [
+                FilledButton(onPressed: () {}, child: const Text('Save')),
+                const SizedBox(width: 16),
+              ],
+            ),
             body: SafeArea(
               child: switch (state) {
                 ProfileLoadingState() => const Center(
                   child: CircularProgressIndicator(),
                 ),
                 ProfileLoadedState() => _buildProfile(context, state),
+                _ => const Center(child: Text('Unknown state')),
               },
             ),
           );
@@ -50,14 +63,16 @@ class ProfilePage extends StatelessWidget {
       children: [
         Center(child: MonitorsCanvas()),
         const SizedBox(height: 32),
-        ...state.monitors.map((monitor) => _buildMontorItem(context, monitor)),
+        ...state.monitors.map(
+          (monitor) => Card(child: _buildMontorItem(context, monitor)),
+        ),
       ],
     );
   }
 
   Widget _buildMontorItem(BuildContext context, MonitorViewEntity monitor) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -70,7 +85,6 @@ class ProfilePage extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 16),
           AnimatedVisibility(
             visible: monitor.display.isEnabled,
             child: _buildDisplay(context, monitor),

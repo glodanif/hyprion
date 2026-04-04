@@ -11,3 +11,5 @@ class ProfileLoadedState extends ProfileState {
 
   ProfileLoadedState({this.profile, required this.monitors});
 }
+
+class ProfileSavedState extends ProfileState {}

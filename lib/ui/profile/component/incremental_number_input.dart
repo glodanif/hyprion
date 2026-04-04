@@ -80,8 +80,9 @@ class _IncrementalNumberInputState extends State<IncrementalNumberInput> {
                 icon: const Icon(Icons.remove),
                 onPressed: () => _incrementValue(-widget.step),
               ),
-              SizedBox(
+              Container(
                 width: 80,
+                margin: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextField(
                   controller: _controller,
                   focusNode: _focusNode,
@@ -100,6 +101,16 @@ class _IncrementalNumberInputState extends State<IncrementalNumberInput> {
                       horizontal: 8,
                       vertical: 12,
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: Colors.lightBlue, width: 2),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
                   ),
                   onChanged: (value) {
                     if (value.isEmpty) return;

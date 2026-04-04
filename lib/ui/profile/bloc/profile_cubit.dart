@@ -109,6 +109,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> saveProfile() async {
+    emit(ProfileSavedState());
+  }
+
   void _emitMonitors() {
     emit(
       ProfileLoadedState(
