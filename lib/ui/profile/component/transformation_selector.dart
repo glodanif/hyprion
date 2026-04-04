@@ -1,9 +1,10 @@
 import 'dart:math' as math;
+import 'package:dropdown_flutter/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hyprion/data/entity/transformation.dart';
 
-class TransformationSelector extends StatelessWidget {
+class TransformationSelector extends StatefulWidget {
   final Transformation initialValue;
   final ValueChanged<Transformation>? onChanged;
 
@@ -14,65 +15,52 @@ class TransformationSelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _showBottomSheet(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            _buildTransformationIcon(initialValue),
-            const SizedBox(width: 24),
-            Text(initialValue.label),
-            const SizedBox(width: 16),
-            const Icon(Icons.arrow_drop_down),
-          ],
-        ),
-      ),
-    );
+  State<TransformationSelector> createState() => _TransformationSelectorState();
+}
+
+class _TransformationSelectorState extends State<TransformationSelector> {
+  late Transformation _selectedTransformation;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTransformation = widget.initialValue;
   }
 
-  Future<void> _showBottomSheet(BuildContext context) async {
-    final result = await showModalBottomSheet<Transformation>(
-      context: context,
-      builder: (BuildContext context) {
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: Transformation.values.length,
-          itemBuilder: (context, index) {
-            final value = Transformation.values[index];
-            final isSelected = value == initialValue;
-
-            return InkWell(
-              onTap: () => Navigator.pop(context, value),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                color: isSelected
-                    ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
-                    : null,
-                child: Row(
-                  children: [
-                    _buildTransformationIcon(value),
-                    const SizedBox(width: 24),
-                    Text(value.label),
-                    const SizedBox(width: 16),
-                    if (isSelected)
-                      Icon(Icons.check, color: Theme.of(context).primaryColor),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      child: Column(
+        children: [
+          const Text(
+            'Transformation',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          _buildTransformationIcon(_selectedTransformation),
+          const SizedBox(height: 16),
+          DropdownFlutter<Transformation>(
+            hintText: 'Select transformation',
+            items: Transformation.values,
+            initialItem: _selectedTransformation,
+            onChanged: (value) {
+              if (value == null) return;
+              setState(() {
+                _selectedTransformation = value;
+              });
+              widget.onChanged?.call(value);
+            },
+            listItemBuilder: (context, item, isSelected, onItemSelect) {
+              return Text(item.label);
+            },
+            headerBuilder: (context, selectedItem, enabled) {
+              return Text(selectedItem.label);
+            },
+          ),
+        ],
+      ),
     );
-
-    if (result != null && onChanged != null) {
-      onChanged!(result);
-    }
   }
 
   Widget _buildTransformationIcon(Transformation value) {

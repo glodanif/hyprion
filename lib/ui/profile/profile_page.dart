@@ -1,10 +1,13 @@
+import 'package:dropdown_flutter/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/sl/service_locator.dart';
 import 'package:hyprion/ui/common/animated_visibility.dart';
 
 import 'bloc/profile_cubit.dart';
 import 'bloc/profile_state.dart';
+import 'component/mode_selector.dart';
 import 'component/monitor_header.dart';
 import 'component/monitors_canvas.dart';
 import 'component/profile_name_input.dart';
@@ -84,15 +87,23 @@ class ProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            'Mode: ${display.resolution.width}x${display.resolution.height} ${display.refreshRate}Hz',
+          ModeSelector(
+            display: display,
+            onModeChanged: (width, height, refreshRate) {
+              context.read<ProfileCubit>().setMode(
+                display.id,
+                width,
+                height,
+                refreshRate,
+              );
+            },
           ),
-          Text(
-            'Position: ${display.currentPosition.x}x${display.currentPosition.y}',
-          ),
+          // Text(
+          //   'Position: ${display.currentPosition.x}x${display.currentPosition.y}',
+          // ),
           Text('Scale: x${display.scale}'),
           TransformationSelector(
             initialValue: display.transformation,
@@ -100,8 +111,8 @@ class ProfilePage extends StatelessWidget {
               context.read<ProfileCubit>().setTransformation(display.id, value);
             },
           ),
-          if (display.mirrorOfId.isNotEmpty)
-            Text('Mirror of ${display.mirrorOfId}'),
+          // if (display.mirrorOfId.isNotEmpty)
+          //   Text('Mirror of ${display.mirrorOfId}'),
         ],
       ),
     );

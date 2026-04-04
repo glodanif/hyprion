@@ -54,6 +54,28 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> setMode(
+    int displayId,
+    int width,
+    int height,
+    double refreshRate,
+  ) async {
+    final monitorIndex = _availableMonitors.indexWhere(
+      (monitor) => monitor.display.id == displayId,
+    );
+    if (monitorIndex != -1) {
+      final monitor = _availableMonitors[monitorIndex];
+      final updatedDisplay = monitor.display.copyWith(
+        resolution: Size(width: width, height: height),
+        refreshRate: refreshRate,
+      );
+      _availableMonitors[monitorIndex] = monitor.copyWith(
+        display: updatedDisplay,
+      );
+      _emitMonitors();
+    }
+  }
+
   Future<void> setTransformation(
     int index,
     Transformation transformation,
