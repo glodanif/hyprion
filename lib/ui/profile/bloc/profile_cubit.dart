@@ -95,6 +95,20 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  Future<void> setScale(int index, double scale) async {
+    final monitorIndex = _availableMonitors.indexWhere(
+      (monitor) => monitor.display.id == index,
+    );
+    if (monitorIndex != -1) {
+      final monitor = _availableMonitors[monitorIndex];
+      final updatedDisplay = monitor.display.copyWith(scale: scale);
+      _availableMonitors[monitorIndex] = monitor.copyWith(
+        display: updatedDisplay,
+      );
+      _emitMonitors();
+    }
+  }
+
   void _emitMonitors() {
     emit(
       ProfileLoadedState(

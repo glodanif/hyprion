@@ -1,12 +1,11 @@
-import 'package:dropdown_flutter/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/sl/service_locator.dart';
 import 'package:hyprion/ui/common/animated_visibility.dart';
 
 import 'bloc/profile_cubit.dart';
 import 'bloc/profile_state.dart';
+import 'component/incremental_number_input.dart';
 import 'component/mode_selector.dart';
 import 'component/monitor_header.dart';
 import 'component/monitors_canvas.dart';
@@ -104,7 +103,15 @@ class ProfilePage extends StatelessWidget {
           // Text(
           //   'Position: ${display.currentPosition.x}x${display.currentPosition.y}',
           // ),
-          Text('Scale: x${display.scale}'),
+          IncrementalNumberInput(
+            value: display.scale,
+            minValue: 0.1,
+            maxValue: 10.0,
+            step: 0.01,
+            onChanged: (value) {
+              context.read<ProfileCubit>().setScale(display.id, value);
+            },
+          ),
           TransformationSelector(
             initialValue: display.transformation,
             onChanged: (value) {
