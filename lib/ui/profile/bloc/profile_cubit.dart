@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/profile.dart';
+import 'package:hyprion/data/entity/transformation.dart';
 import 'package:hyprion/data/storage/profile_storage.dart';
 import 'package:hyprion/data/system/display_manager.dart';
 import 'package:hyprion/ui/profile/bloc/profile_state.dart';
@@ -46,6 +47,25 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (monitorIndex != -1) {
       final monitor = _availableMonitors[monitorIndex];
       final updatedDisplay = monitor.display.copyWith(isEnabled: enabled);
+      _availableMonitors[monitorIndex] = monitor.copyWith(
+        display: updatedDisplay,
+      );
+      _emitMonitors();
+    }
+  }
+
+  Future<void> setTransformation(
+    int index,
+    Transformation transformation,
+  ) async {
+    final monitorIndex = _availableMonitors.indexWhere(
+      (monitor) => monitor.display.id == index,
+    );
+    if (monitorIndex != -1) {
+      final monitor = _availableMonitors[monitorIndex];
+      final updatedDisplay = monitor.display.copyWith(
+        transformation: transformation,
+      );
       _availableMonitors[monitorIndex] = monitor.copyWith(
         display: updatedDisplay,
       );
