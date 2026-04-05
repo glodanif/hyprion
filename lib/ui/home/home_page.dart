@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
               case HomeLoadingState():
                 return const Center(child: CircularProgressIndicator());
               case HomeLoadedState():
-                return _buildProfiles(context, state.profiles);
+                return _buildProfiles(context, state.config.profiles);
             }
           },
         ),

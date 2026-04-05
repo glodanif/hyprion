@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/rendering.dart';
 import 'package:hyprion/data/entity/audio_sink.dart';
+import 'package:hyprion/data/entity/config.dart';
 import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/monitor.dart';
 import 'package:hyprion/data/entity/profile.dart';
@@ -19,7 +20,8 @@ class ProfileStorageImpl extends ProfileStorage {
 
   @override
   Future<void> saveProfile(Profile profile) async {
-    final profiles = await getAllProfiles();
+    final config = await getConfig();
+    final profiles = [...config.profiles];
     final existingIndex = profiles.indexWhere((p) => p.id == profile.id);
 
     if (existingIndex != -1) {
@@ -28,14 +30,16 @@ class ProfileStorageImpl extends ProfileStorage {
       profiles.add(profile);
     }
 
-    await _saveProfiles(profiles);
+    await _saveConfig(
+      Config(currentProfileId: config.currentProfileId, profiles: profiles),
+    );
   }
 
   @override
   Future<Profile?> getProfileById(String id) async {
-    final profiles = await getAllProfiles();
+    final config = await getConfig();
     try {
-      return profiles.firstWhere((p) => p.id == id);
+      return config.profiles.firstWhere((p) => p.id == id);
     } catch (e) {
       return null;
     }
@@ -43,39 +47,70 @@ class ProfileStorageImpl extends ProfileStorage {
 
   @override
   Future<void> deleteProfileById(String id) async {
-    final profiles = await getAllProfiles();
+    final config = await getConfig();
+    final profiles = [...config.profiles];
     profiles.removeWhere((p) => p.id == id);
-    await _saveProfiles(profiles);
+
+    var currentProfileId = config.currentProfileId;
+    if (config.currentProfileId == id) {
+      currentProfileId = profiles.isNotEmpty ? profiles.first.id : '';
+    }
+
+    await _saveConfig(
+      Config(currentProfileId: currentProfileId, profiles: profiles),
+    );
   }
 
   @override
   Future<List<Profile>> getAllProfiles() async {
+    final config = await getConfig();
+    return config.profiles;
+  }
+
+  @override
+  Future<Config> getConfig() async {
     final file = await _getProfilesFile();
 
     if (!await file.exists()) {
-      return [];
+      return Config(currentProfileId: '', profiles: []);
     }
 
     final content = await file.readAsString();
     if (content.isEmpty) {
-      return [];
+      return Config(currentProfileId: '', profiles: []);
     }
 
-    final data = json.decode(content) as Map<String, dynamic>;
-    final profilesList = data['profiles'] as List?;
-
-    if (profilesList == null) {
-      return [];
+    final decoded = json.decode(content);
+    if (decoded is! Map) {
+      return Config(currentProfileId: '', profiles: []);
     }
 
-    return profilesList
-        .map((p) => _profileFromMap(p as Map<String, dynamic>))
-        .toList();
+    final data = decoded.cast<String, dynamic>();
+
+    // Backward compatible with old format: { "profiles": [...] }
+    final profilesList = data['profiles'] as List? ?? [];
+    final currentProfileId = data['current_profile_id'] as String? ?? '';
+
+    return Config(
+      currentProfileId: currentProfileId,
+      profiles: profilesList
+          .map((p) => _profileFromMap(p as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
-  Future<void> _saveProfiles(List<Profile> profiles) async {
+  @override
+  Future<void> setCurrentProfileId(String id) async {
+    final config = await getConfig();
+    await _saveConfig(Config(currentProfileId: id, profiles: config.profiles));
+  }
+
+  Future<void> _saveConfig(Config config) async {
     final file = await _getProfilesFile();
-    final data = {'profiles': profiles.map((p) => _profileToMap(p)).toList()};
+    final data = {
+      'current_profile_id': config.currentProfileId,
+      'profiles': config.profiles.map((p) => _profileToMap(p)).toList(),
+    };
 
     const encoder = JsonEncoder.withIndent('  ');
     final jsonString = encoder.convert(data);
@@ -96,7 +131,7 @@ class ProfileStorageImpl extends ProfileStorage {
     final file = File('${configDir.path}/$_fileName');
     if (!await file.exists()) {
       await file.create();
-      await file.writeAsString('{"profiles":[]}');
+      await file.writeAsString('{"current_profile_id":"","profiles":[]}');
     }
 
     return file;

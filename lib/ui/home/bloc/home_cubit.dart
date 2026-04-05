@@ -11,8 +11,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadProfiles() async {
     emit(HomeLoadingState());
-    final profiles = await _profileStorage.getAllProfiles();
-    debugPrint('Loaded $profiles profiles');
-    emit(HomeLoadedState(profiles: profiles));
+    final config = await _profileStorage.getConfig();
+    debugPrint('Loaded $config');
+    emit(HomeLoadedState(config: config));
   }
 }

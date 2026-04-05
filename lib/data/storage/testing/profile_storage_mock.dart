@@ -1,3 +1,4 @@
+import 'package:hyprion/data/entity/config.dart';
 import 'package:hyprion/data/entity/profile.dart';
 
 import '../profile_storage.dart';
@@ -18,4 +19,12 @@ class ProfileStorageMock extends ProfileStorage {
   Future<List<Profile>> getAllProfiles() async {
     return [];
   }
+
+  @override
+  Future<Config> getConfig() async {
+    return Config(currentProfileId: '', profiles: []);
+  }
+
+  @override
+  Future<void> setCurrentProfileId(String id) async {}
 }

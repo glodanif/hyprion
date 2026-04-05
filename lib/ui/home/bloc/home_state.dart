@@ -1,11 +1,11 @@
-import 'package:hyprion/data/entity/profile.dart';
+import 'package:hyprion/data/entity/config.dart';
 
 sealed class HomeState {}
 
 class HomeLoadingState extends HomeState {}
 
 class HomeLoadedState extends HomeState {
-  final List<Profile> profiles;
+  final Config config;
 
-  HomeLoadedState({required this.profiles});
+  HomeLoadedState({required this.config});
 }
