@@ -41,7 +41,7 @@ class DisplayManagerMockBehavior {
                 resolution: Size(width: 4096, height: 2160),
                 refreshRate: 29.97,
                 isEnabled: false,
-                mirrorOfId: '',
+                mirrorOfName: '',
                 currentPosition: Point(0, 0),
                 availableModes: [
                   Mode(
@@ -84,7 +84,7 @@ class DisplayManagerMockBehavior {
                 resolution: Size(width: 2560, height: 1440),
                 refreshRate: 59.95100,
                 isEnabled: true,
-                mirrorOfId: '',
+                mirrorOfName: '',
                 currentPosition: Point(1920, 0),
                 availableModes: [
                   Mode(width: 2560, height: 1440, refreshRates: [59.95]),
@@ -123,7 +123,7 @@ class DisplayManagerMockBehavior {
                 resolution: Size(width: 1920, height: 1080),
                 refreshRate: 60.0,
                 isEnabled: true,
-                mirrorOfId: '',
+                mirrorOfName: '',
                 currentPosition: Point(0, 0),
                 availableModes: [
                   Mode(width: 1920, height: 1080, refreshRates: [60.00, 50.00]),

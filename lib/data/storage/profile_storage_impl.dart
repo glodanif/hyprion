@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:flutter/rendering.dart';
 import 'package:hyprion/data/entity/audio_sink.dart';
+import 'package:hyprion/data/entity/display.dart';
 import 'package:hyprion/data/entity/monitor.dart';
 import 'package:hyprion/data/entity/profile.dart';
 import 'package:hyprion/data/entity/transformation.dart';
@@ -78,6 +79,7 @@ class ProfileStorageImpl extends ProfileStorage {
 
     const encoder = JsonEncoder.withIndent('  ');
     final jsonString = encoder.convert(data);
+    debugPrint(jsonString);
     await file.writeAsString(jsonString);
   }
 
@@ -127,6 +129,7 @@ class ProfileStorageImpl extends ProfileStorage {
     return {
       'id': display.id,
       'name': display.name,
+      'model': display.model,
       'refresh_rate': display.refreshRate,
       'scale': display.scale,
       'width': display.size.width,
@@ -135,24 +138,27 @@ class ProfileStorageImpl extends ProfileStorage {
       'position_y': display.position.y,
       'transformation': display.transformation.code,
       'is_enabled': display.isEnabled,
+      'mirror_of_name': display.mirrorOfName,
     };
   }
 
   Monitor _monitorFromMap(Map<String, dynamic> map) {
     return Monitor(
-      id: map['id'] as String,
+      id: map['id'] as int,
       name: map['name'] as String,
-      refreshRate: map['refresh_rate'] as int,
+      model: map['model'] as String,
+      refreshRate: (map['refresh_rate'] as num).toDouble(),
       scale: (map['scale'] as num).toDouble(),
       size: Size(
-        (map['width'] as num).toDouble(),
-        (map['height'] as num).toDouble(),
+        width: (map['width'] as num).toInt(),
+        height: (map['height'] as num).toInt(),
       ),
       position: Point<int>(map['position_x'] as int, map['position_y'] as int),
       transformation: Transformation.values.firstWhere(
         (t) => t.code == map['transformation'] as int,
       ),
       isEnabled: map['is_enabled'] as bool,
+      mirrorOfName: map['mirror_of_name'] as String,
     );
   }
 

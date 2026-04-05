@@ -6,10 +6,10 @@ sealed class ProfileState {}
 class ProfileLoadingState extends ProfileState {}
 
 class ProfileLoadedState extends ProfileState {
-  final Profile? profile;
+  final Profile profile;
   final List<MonitorViewEntity> monitors;
 
-  ProfileLoadedState({this.profile, required this.monitors});
+  ProfileLoadedState({required this.profile, required this.monitors});
 }
 
-class ProfileSavedState extends ProfileState {}
+class ProfileCompletedState extends ProfileState {}

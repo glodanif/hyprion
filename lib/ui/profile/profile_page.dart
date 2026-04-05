@@ -20,27 +20,53 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('profileId: $profileId');
     return BlocProvider<ProfileCubit>(
       create: (context) => getIt<ProfileCubit>()..loadProfile(profileId),
       child: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (previous, current) => current is ProfileSavedState,
+        listenWhen: (previous, current) => current is ProfileCompletedState,
         listener: (context, state) {
-          if (state is ProfileSavedState) {
+          if (state is ProfileCompletedState) {
             Navigator.of(context).pop();
           }
         },
-        buildWhen: (previous, current) => current is! ProfileSavedState,
+        buildWhen: (previous, current) => current is! ProfileCompletedState,
         builder: (context, state) {
           final titleWidget = state is ProfileLoadedState
-              ? ProfileNameInput(initialValue: state.profile?.name)
+              ? ProfileNameInput(
+                  initialValue: state.profile.name,
+                  onSubmitted: (name) {
+                    context.read<ProfileCubit>().setProfileName(name);
+                  },
+                )
               : const Text('...');
+
           return Scaffold(
             appBar: AppBar(
               title: titleWidget,
-              actions: [
-                FilledButton(onPressed: () {}, child: const Text('Save')),
-                const SizedBox(width: 16),
-              ],
+              actions: state is ProfileLoadedState
+                  ? [
+                      FilledButton.icon(
+                        onPressed: () {
+                          context.read<ProfileCubit>().saveProfile();
+                        },
+                        icon: const Icon(Icons.save),
+                        label: const Text('Save'),
+                      ),
+                      if (state.profile.id.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: FilledButton.icon(
+                            onPressed: () {
+                              context.read<ProfileCubit>().removeProfile();
+                            },
+                            icon: const Icon(Icons.delete),
+                            label: const Text('Remove'),
+                          ),
+                        ),
+                      const SizedBox(width: 16),
+                    ]
+                  : [],
             ),
             body: SafeArea(
               child: switch (state) {
@@ -59,7 +85,7 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfile(BuildContext context, ProfileLoadedState state) {
     return ListView(
-      padding: EdgeInsets.symmetric(vertical: 32),
+      padding: const EdgeInsets.symmetric(vertical: 32),
       children: [
         Center(child: MonitorsCanvas()),
         const SizedBox(height: 32),
@@ -71,26 +97,46 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildMontorItem(BuildContext context, MonitorViewEntity monitor) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MonitorHeader(
-            display: monitor.display,
-            onEnabledChanged: (enabled) {
-              context.read<ProfileCubit>().setEnabled(
-                monitor.display.id,
-                enabled,
-              );
-            },
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MonitorHeader(
+          display: monitor.display,
+          isAvailable: monitor.isAvailable,
+          onEnabledChanged: (enabled) {
+            if (!monitor.isAvailable) return;
+            context.read<ProfileCubit>().setEnabled(
+              monitor.display.id,
+              enabled,
+            );
+          },
+        ),
+        if (!monitor.isAvailable)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: TextButton(
+              onPressed: () {
+                context.read<ProfileCubit>().removeUnavailableMonitor(
+                  monitor.display.id,
+                );
+              },
+              child: const Text('Remove', style: TextStyle(color: Colors.red)),
+            ),
           ),
+        if (monitor.isAvailable)
           AnimatedVisibility(
             visible: monitor.display.isEnabled,
             child: _buildDisplay(context, monitor),
           ),
-        ],
-      ),
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: monitor.isAvailable
+          ? content
+          : Opacity(opacity: 0.6, child: content),
     );
   }
 
@@ -114,9 +160,6 @@ class ProfilePage extends StatelessWidget {
               );
             },
           ),
-          // Text(
-          //   'Position: ${display.currentPosition.x}x${display.currentPosition.y}',
-          // ),
           IncrementalNumberInput(
             value: display.scale,
             minValue: 0.1,
@@ -132,8 +175,6 @@ class ProfilePage extends StatelessWidget {
               context.read<ProfileCubit>().setTransformation(display.id, value);
             },
           ),
-          // if (display.mirrorOfId.isNotEmpty)
-          //   Text('Mirror of ${display.mirrorOfId}'),
         ],
       ),
     );

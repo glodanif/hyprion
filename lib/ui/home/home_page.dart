@@ -70,6 +70,8 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _openProfile(BuildContext context, String? profileId) async {
+    debugPrint('Opening profile: $profileId');
+
     if (profileId == null) {
       await context.push(RoutePath.profile.path);
     } else {

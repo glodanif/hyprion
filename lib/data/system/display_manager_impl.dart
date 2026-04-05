@@ -61,7 +61,7 @@ class DisplayManagerImpl implements DisplayManager {
       resolution: resolution,
       refreshRate: refreshRate,
       isEnabled: !(json['disabled'] as bool),
-      mirrorOfId: mirrorOf == 'none' ? '' : mirrorOf,
+      mirrorOfName: mirrorOf == 'none' ? '' : mirrorOf,
       currentPosition: Point(json['x'] as int, json['y'] as int),
       availableModes: availableMods,
     );

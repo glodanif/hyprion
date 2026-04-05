@@ -20,8 +20,9 @@ final router = GoRouter(
     ),
     GoRoute(
       path: RoutePath.profile.path,
-      builder: (context, state) =>
-          ProfilePage(profileId: state.uri.queryParameters['id']),
+      builder: (context, state) {
+        return ProfilePage(profileId: state.uri.queryParameters['id']);
+      },
     ),
   ],
 );

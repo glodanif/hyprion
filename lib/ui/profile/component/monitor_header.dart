@@ -3,11 +3,13 @@ import 'package:hyprion/data/entity/display.dart';
 
 class MonitorHeader extends StatelessWidget {
   final Display display;
+  final bool isAvailable;
   final Function(bool) onEnabledChanged;
 
   const MonitorHeader({
     super.key,
     required this.display,
+    required this.isAvailable,
     required this.onEnabledChanged,
   });
 
@@ -32,18 +34,36 @@ class MonitorHeader extends StatelessWidget {
           children: [
             Text(display.name, style: Theme.of(context).textTheme.titleLarge),
             Text(display.description),
+            if (!isAvailable)
+              const Text(
+                'Disconnected',
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
+              ),
           ],
         ),
         const Spacer(),
-        FilledButton(
-          onPressed: () => onEnabledChanged(!display.isEnabled),
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all<Color>(
-              display.isEnabled ? Colors.redAccent.shade100 : Colors.lightBlue,
+        if (isAvailable)
+          FilledButton(
+            onPressed: () => onEnabledChanged(!display.isEnabled),
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.all<Color>(
+                display.isEnabled
+                    ? Colors.redAccent.shade100
+                    : Colors.lightBlue,
+              ),
             ),
+            child: Text(!display.isEnabled ? 'Enable' : 'Disable'),
+          )
+        else
+          Chip(
+            label: const Text('Unavailable'),
+            backgroundColor: Colors.grey.shade300,
+            labelStyle: TextStyle(color: Colors.grey.shade700),
           ),
-          child: Text(!display.isEnabled ? 'Enable' : 'Disable'),
-        ),
       ],
     );
   }
